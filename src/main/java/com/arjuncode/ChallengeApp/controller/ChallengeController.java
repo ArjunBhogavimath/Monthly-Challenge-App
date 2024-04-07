@@ -2,6 +2,8 @@ package com.arjuncode.ChallengeApp.controller;
 
 import com.arjuncode.ChallengeApp.Challenge;
 import com.arjuncode.ChallengeApp.service.ChallengeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -12,33 +14,31 @@ public class ChallengeController {
 
     private ChallengeService challengeService;
 
-    //we need to store challenges
-
 
     public ChallengeController(ChallengeService challengeService) {
         this.challengeService = challengeService;
     }
 
     @GetMapping("/challenges")
-    public List<Challenge> getAllChallenges(){
-        return challengeService.getAllChallenges();
+    public ResponseEntity<List<Challenge>> getAllChallenges(){
+        return new ResponseEntity<>(challengeService.getAllChallenges(), HttpStatus.OK) ;
     }
 
     @PostMapping("/challenges")
-    public String addChallenge(@RequestBody Challenge challenge){
+    public ResponseEntity<String> addChallenge(@RequestBody Challenge challenge){
         boolean isChallengeAdded = challengeService.addChallenge(challenge);
         if(isChallengeAdded){
-            return "Challenge added successfully";
+            return new ResponseEntity<>("Challenge added successfully",HttpStatus.OK);
         }
-        return "Challenge not added";
+        return new ResponseEntity<>("Challenge not added",HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/challenges/{month}")
-    public Challenge getChallenges(@PathVariable String month){
+    public ResponseEntity<Challenge> getChallenges(@PathVariable String month){
         Challenge challenge =  challengeService.getChallenges(month);
         if(challenge != null){
-            return challenge;
+            return new ResponseEntity<>(challenge, HttpStatus.OK);
         }
-        return null;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

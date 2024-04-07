@@ -1,10 +1,8 @@
 package com.arjuncode.ChallengeApp.controller;
 
 import com.arjuncode.ChallengeApp.Challenge;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.arjuncode.ChallengeApp.service.ChallengeService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,23 +10,35 @@ import java.util.List;
 @RestController
 public class ChallengeController {
 
-    //we need to store challenges
-    private List<Challenge> challenges = new ArrayList<>();
+    private ChallengeService challengeService;
 
-    public ChallengeController() {
-        //create new object of challenge class
-        Challenge challenge1 = new Challenge(1L, "January", "This is the January month challenge");
-        challenges.add(challenge1);
+    //we need to store challenges
+
+
+    public ChallengeController(ChallengeService challengeService) {
+        this.challengeService = challengeService;
     }
 
     @GetMapping("/challenges")
     public List<Challenge> getAllChallenges(){
-        return challenges;
+        return challengeService.getAllChallenges();
     }
 
     @PostMapping("/challenges")
     public String addChallenge(@RequestBody Challenge challenge){
-        challenges.add(challenge);
-        return "Challenge added successfully";
+        boolean isChallengeAdded = challengeService.addChallenge(challenge);
+        if(isChallengeAdded){
+            return "Challenge added successfully";
+        }
+        return "Challenge not added";
+    }
+
+    @GetMapping("/challenges/{month}")
+    public Challenge getChallenges(@PathVariable String month){
+        Challenge challenge =  challengeService.getChallenges(month);
+        if(challenge != null){
+            return challenge;
+        }
+        return null;
     }
 }

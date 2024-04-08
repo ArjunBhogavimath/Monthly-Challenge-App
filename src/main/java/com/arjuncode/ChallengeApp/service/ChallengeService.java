@@ -34,7 +34,6 @@ public class ChallengeService {
 
     }
 
-
     public Challenge getChallenges(String id) {
         for(Challenge challenge: challenges){
             if(challenge.getMonth().equalsIgnoreCase(id)){
@@ -42,5 +41,19 @@ public class ChallengeService {
             }
         }
         return null;
+    }
+
+    public boolean updateChallenge(String month, Challenge updatedChallenge) {
+        for(Challenge challenge: challenges){
+            if(challenge.getMonth().equalsIgnoreCase(month)){
+                challenge.setDescription("This is the updated description");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean deleteChallenge(Long id) {
+        return challenges.removeIf(challenge -> challenge.getId().equals(id));
     }
 }
